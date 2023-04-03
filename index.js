@@ -1,16 +1,16 @@
 const express = require('express');
 const app = express();
 
-app.use(express.urlencoded({extended: false}))
+app.use(express.static('./public'));
+app.use(express.urlencoded({extended: false}));
 
 const {initDB, addAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums} = require('./database.js');
 
 // initSampleAlbums();
 
-app.get('/', (req, res) => { 
-	let sendBack = {message: 'This lab 1', name: 'HKR'}
-	res.json(sendBack);
-});
+// app.get('/', (req, res) => { 
+// 	res.sendFile('index.html');
+// });
 
 app.get('/albums', async (req, res) => { 
 	try {
@@ -48,6 +48,21 @@ app.post('/albums', async (req, res) => {
 		res.status(400);
 	}
 	res.json(dbResp);
+});
+
+app.put('/albums', async (req, res) => {
+	// let dbResp = ""
+
+	// if (!req.body) {return sendStatus(400)}
+
+	// try {
+	// 	dbResp = await addAlbum({title, artist, year} = req.body);
+	// } catch(e) {
+	// 	console.error(e);
+	// 	dbResp = {message: e._message}
+	// 	res.status(400);
+	// }
+	// res.json(dbResp);
 });
 
 app.delete('/albums/:id', async (req, res) => {
