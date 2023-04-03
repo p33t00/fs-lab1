@@ -2,7 +2,8 @@ const baseUrl = 'http://localhost:3000';
 
 let navHomeBtn = document.getElementById("nav-home-tab");
 let addData = document.getElementById("addButton");
-// let deleteData = document.getElementById("deleteButton");
+let editData = document.getElementById("editSaveButton");
+let editModalNode = document.getElementById("editModal");
 
 // loading albums to index page.
 loadAlbums();
@@ -17,7 +18,7 @@ async function loadAlbums() {
             <td>${a.artist}</td>
             <td>${a.year}</td>
             <td>
-                <div class="btn-group" role="group" aria-label="AlbumCtl">
+                <div class="btn-group float-end" role="group">
                     <button class="btn-primary btn-disabled btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
                     <button onclick="deleteData(event)" class="btn-danger btn-sm">Delete</button>
                 </div>
@@ -34,12 +35,10 @@ const deleteData = (async event => {
     if (resp.status == 200) { albumRow.remove(); }
 });
 
-
 addData.addEventListener('click', async event => {
-    const name = nameText.value
-    var category = categoryText.value
-    var date = dateText.value
-    var author = authorText.value
+    const title = titleText.value
+    const artist = artistText.value
+    const year = yearText.value
 
     let rawResponse = await fetch(baseUrl + '/albums', {
         method: 'POST',
@@ -47,10 +46,34 @@ addData.addEventListener('click', async event => {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({name: name, category: category, date: date, author: author})
+        body: JSON.stringify({title: title, artist: artist, year: year})
     });
 
     if (rawResponse.status === 200) {
-        document.querySelectorAll("#addBookFields div input").forEach((input) => {input.value = ""})
+        document.querySelectorAll("#nav-add-album div input").forEach((input) => {input.value = ""})
     }
+});
+
+editData.addEventListener('click', async event => {
+    const title = inputTitle.value
+    const artist = inputArtist.value
+    const year = inputYear.value
+    const id = inputId.value
+
+    let rawResponse = await fetch(baseUrl + '/albums/' + id, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({title: title, artist: artist, year: year})
+    });
+
+    // if (rawResponse.status === 200) {
+    //     //....
+    // }
+});
+
+editModalNode.addEventListener('show.bs.modal', event => {
+    inputId.value = event.relatedTarget.parentNode.parentNode.parentNode.dataset.aid;
 });

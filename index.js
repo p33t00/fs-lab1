@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 app.use(express.static('./public'));
-app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 const {initDB, addAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums} = require('./database.js');
 
@@ -50,7 +50,8 @@ app.post('/albums', async (req, res) => {
 	res.json(dbResp);
 });
 
-app.put('/albums', async (req, res) => {
+app.put('/albums/:id', async (req, res) => {
+	console.log(req.body)
 	// let dbResp = ""
 
 	// if (!req.body) {return sendStatus(400)}
