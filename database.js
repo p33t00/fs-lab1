@@ -18,6 +18,10 @@ addAlbum = async (data) => {
     return await album.save(); 
 }
 
+editAlbum = async (id, data) => {
+    return await Album.findByIdAndUpdate(id, data, {lean:true, new: true}); 
+}
+
 deleteAlbum = async (id) => await Album.findByIdAndDelete(id);
 
 initSampleAlbums = async () => {
@@ -34,4 +38,4 @@ initSampleAlbums = async () => {
   }
 }
 
-module.exports = { initDB, addAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums }
+module.exports = { initDB, addAlbum, editAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums }

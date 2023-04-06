@@ -4,7 +4,7 @@ const app = express();
 app.use(express.static('./public'));
 app.use(express.json());
 
-const {initDB, addAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums} = require('./database.js');
+const {initDB, addAlbum, editAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums} = require('./database.js');
 
 // initSampleAlbums();
 
@@ -51,19 +51,18 @@ app.post('/albums', async (req, res) => {
 });
 
 app.put('/albums/:id', async (req, res) => {
-	console.log(req.body)
-	// let dbResp = ""
+	let dbResp = ""
 
-	// if (!req.body) {return sendStatus(400)}
+	if (!req.body) {return sendStatus(400)}
 
-	// try {
-	// 	dbResp = await addAlbum({title, artist, year} = req.body);
-	// } catch(e) {
-	// 	console.error(e);
-	// 	dbResp = {message: e._message}
-	// 	res.status(400);
-	// }
-	// res.json(dbResp);
+	try {
+		dbResp = await editAlbum(req.params.id, {title, artist, year} = req.body);
+	} catch(e) {
+		console.error(e);
+		dbResp = {message: e._message}
+		res.status(400);
+	}
+	res.json(dbResp);
 });
 
 app.delete('/albums/:id', async (req, res) => {

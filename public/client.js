@@ -12,19 +12,7 @@ navHomeBtn.addEventListener('click', async event => { await loadAlbums() });
 
 async function loadAlbums() {
     let albums = await (await fetch(baseUrl + '/albums')).json();
-    document.getElementById("Albums").innerHTML = albums.map(a => 
-        `<tr data-aid="${a._id}">
-            <td>${a.title}</td>
-            <td>${a.artist}</td>
-            <td>${a.year}</td>
-            <td>
-                <div class="btn-group float-end" role="group">
-                    <button class="btn-primary btn-disabled btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
-                    <button onclick="deleteData(event)" class="btn-danger btn-sm">Delete</button>
-                </div>
-            </td>
-        </tr>`
-    ).join('');
+    document.getElementById("Albums").innerHTML = albums.map(a => generateAlbumRow(a)).join('');
 }
 
 const deleteData = (async event => {
@@ -69,11 +57,40 @@ editData.addEventListener('click', async event => {
         body: JSON.stringify({title: title, artist: artist, year: year})
     });
 
-    // if (rawResponse.status === 200) {
-    //     //....
-    // }
+    if (rawResponse.status === 200) {
+        updateAlbumList(await rawResponse.json());
+    }
 });
 
 editModalNode.addEventListener('show.bs.modal', event => {
+    const rowNodes = event.relatedTarget.parentNode.parentNode.parentNode.children;
+    inputTitle.value = rowNodes[0].innerHTML;
+    inputArtist.value = rowNodes[1].innerHTML
+    inputYear.value = rowNodes[2].innerHTML;
     inputId.value = event.relatedTarget.parentNode.parentNode.parentNode.dataset.aid;
 });
+
+function generateAlbumRow(album) {
+    return `<tr data-aid="${album._id}">
+            <td>${album.title}</td>
+            <td>${album.artist}</td>
+            <td>${album.year}</td>
+            <td>
+                <div class="btn-group float-end" role="group">
+                    <button class="btn-primary btn-disabled btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
+                    <button onclick="deleteData(event)" class="btn-danger btn-sm">Delete</button>
+                </div>
+            </td>
+        </tr>`
+}
+
+function updateAlbumList(album) {
+    let albumToUpdate;
+    const albumList = document.getElementById("Albums").childNodes;
+
+    albumList.forEach(a => {
+        if (a.dataset.aid == album._id) albumToUpdate = a;
+    });
+
+    albumToUpdate.innerHTML = generateAlbumRow(album);
+}
