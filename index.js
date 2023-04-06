@@ -6,7 +6,7 @@ const port = process.env.HOST_PORT;
 app.use(express.static('./public'));
 app.use(express.json());
 
-const {initDB, addAlbum, editAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums} = require('./database.js');
+const {initDB, existAlbum, addAlbum, editAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums} = require('./database.js');
 
 // initSampleAlbums();
 
@@ -28,7 +28,8 @@ app.get('/albums/:title', async (req, res) => {
 
 	try {
 		let album = await getAlbum(req.params.title);
-		resp_data = album !== null ? album : 'No albums found';
+		if (album === null) res.status(404);
+		resp_data = album !== null ? album : {message: "No albums found"};
 	} catch (e) {
 		console.error(e);
 		res.status(400)
@@ -43,7 +44,13 @@ app.post('/albums', async (req, res) => {
 	if (!req.body) {return sendStatus(400)}
 
 	try {
-		dbResp = await addAlbum({title, artist, year} = req.body);
+		const album = {title, artist, year} = req.body
+		if (await existAlbum(album)) {
+			res.status(409)
+		} else {
+			dbResp = await addAlbum(album);
+			res.status(201);
+		}
 	} catch(e) {
 		console.error(e);
 		dbResp = {message: e._message}
@@ -53,12 +60,17 @@ app.post('/albums', async (req, res) => {
 });
 
 app.put('/albums/:id', async (req, res) => {
-	let dbResp = ""
+	let dbResp = "";
+	const aId = req.params.id;
 
 	if (!req.body) {return sendStatus(400)}
 
 	try {
-		dbResp = await editAlbum(req.params.id, {title, artist, year} = req.body);
+		dbResp = await editAlbum(aId, {title, artist, year} = req.body);
+		if (dbResp === null) {
+			dbResp = {message: "Not Found"};
+			res.status(404);
+		}
 	} catch(e) {
 		console.error(e);
 		dbResp = {message: e._message}
@@ -69,8 +81,9 @@ app.put('/albums/:id', async (req, res) => {
 
 app.delete('/albums/:id', async (req, res) => {
 	try {
-		deleteAlbum(req.params.id);
-		res.sendStatus(200);
+		const dbResp = await deleteAlbum(req.params.id);
+		if (dbResp === null) res.sendStatus(404);
+		else res.sendStatus(200);
 	} catch(e) {
 		console.error(e);
 		res.sendStatus(500);

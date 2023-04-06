@@ -7,6 +7,8 @@ async function initDB() {
   await mongoose.connect(process.env.DB_URL);
 }
 
+existAlbum = async (album) => await Album.findOne(album);
+
 getAlbums = async () => await Album.find();
 
 getAlbum = async (title) => {
@@ -22,7 +24,7 @@ editAlbum = async (id, data) => {
     return await Album.findByIdAndUpdate(id, data, {lean:true, new: true}); 
 }
 
-deleteAlbum = async (id) => await Album.findByIdAndDelete(id);
+deleteAlbum = async (id) => await Album.findByIdAndDelete(id, {lean: true});
 
 initSampleAlbums = async () => {
   try {
@@ -38,4 +40,4 @@ initSampleAlbums = async () => {
   }
 }
 
-module.exports = { initDB, addAlbum, editAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums }
+module.exports = { initDB, existAlbum, addAlbum, editAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums }
