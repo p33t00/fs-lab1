@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+require('dotenv').config();
+const port = process.env.HOST_PORT;
 
 app.use(express.static('./public'));
 app.use(express.json());
@@ -75,7 +77,7 @@ app.delete('/albums/:id', async (req, res) => {
 	}
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
 	initDB().catch(err => console.error('DB connection error:', err));
-	console.log('Server listening on container port: ' + 3000);
+	console.log('Server listening on container port: ' + port);
 });
