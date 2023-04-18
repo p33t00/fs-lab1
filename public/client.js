@@ -35,8 +35,8 @@ addData.addEventListener('click', async event => {
         body: JSON.stringify({title: title, artist: artist, year: year})
     });
 
-    if (rawResponse.status === 200) {
-        document.querySelectorAll("#nav-add-album div input").forEach((input) => {input.value = ""})
+    if (rawResponse.status === 201) {
+        document.querySelectorAll("#nav-add-album div > input").forEach((input) => {input.value = ""})
     }
 });
 
