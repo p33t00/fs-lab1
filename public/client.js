@@ -1,5 +1,3 @@
-const baseUrl = 'http://localhost:3000';
-
 let navHomeBtn = document.getElementById("nav-home-tab");
 let addData = document.getElementById("addButton");
 let editData = document.getElementById("editSaveButton");
@@ -11,7 +9,7 @@ loadAlbums();
 navHomeBtn.addEventListener('click', async event => { await loadAlbums() });
 
 async function loadAlbums() {
-    let albums = await (await fetch(baseUrl + '/albums')).json();
+    let albums = await (await fetch('/albums')).json();
     document.getElementById("Albums").innerHTML = albums.map(a => generateAlbumRow(a)).join('');
 }
 
