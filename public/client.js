@@ -17,7 +17,7 @@ const deleteData = (async event => {
     const albumRow = event.target.parentNode.parentNode.parentNode;
     const albumId = albumRow.dataset.aid;
 
-    const resp = await fetch(baseUrl + '/albums/' + albumId, {method: 'DELETE'});
+    const resp = await fetch('/albums/' + albumId, {method: 'DELETE'});
     if (resp.status == 200) { albumRow.remove(); }
 });
 
@@ -26,7 +26,7 @@ addData.addEventListener('click', async event => {
     const artist = artistText.value
     const year = yearText.value
 
-    let rawResponse = await fetch(baseUrl + '/albums', {
+    let rawResponse = await fetch('/albums', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -46,7 +46,7 @@ editData.addEventListener('click', async event => {
     const year = inputYear.value
     const id = inputId.value
 
-    let rawResponse = await fetch(baseUrl + '/albums/' + id, {
+    let rawResponse = await fetch('/albums/' + id, {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
