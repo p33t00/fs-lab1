@@ -5,6 +5,7 @@ const Album = require('./models/Album.js');
 // used on server start
 async function initDB() {
   await mongoose.connect(process.env.DB_URL);
+  mongoose.set('strictQuery', false);
 }
 
 existAlbum = async (album) => await Album.findOne(album);

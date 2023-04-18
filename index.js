@@ -3,16 +3,12 @@ const app = express();
 require('dotenv').config();
 const port = process.env.HOST_PORT;
 
-app.use(express.static('./public'));
+app.use(express.static('public'));
 app.use(express.json());
 
 const {initDB, existAlbum, addAlbum, editAlbum, getAlbums, getAlbum, deleteAlbum, initSampleAlbums} = require('./database.js');
 
 // initSampleAlbums();
-
-// app.get('/', (req, res) => { 
-// 	res.sendFile('index.html');
-// });
 
 app.get('/albums', async (req, res) => { 
 	try {
